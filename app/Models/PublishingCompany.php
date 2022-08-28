@@ -17,6 +17,6 @@ class PublishingCompany extends Model
     
     public function books()
     {
-        return $this->hasOne(Books::class);
+        return $this->hasMany(Books::class);
     }
 }
