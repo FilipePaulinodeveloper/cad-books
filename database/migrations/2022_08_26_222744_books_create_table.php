@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('sinopse');
             $table->integer('pages');
             $table->string('cover_type');      
-            $table->unsignedBigInteger('publish_company_id');
+            $table->unsignedBigInteger('publish_companies_id');
             
-            $table->foreign('publish_company_id')->references('id')->on('publishing_companies');
+            $table->foreign('publish_companies_id')->references('id')->on('publishing_companies');
         });
 
     }
