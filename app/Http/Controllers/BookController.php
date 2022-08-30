@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function __construct()
-    {
-       
+    private $book;
+
+    public function __construct(Book $book)
+    {   
+       $this->book = $book;
     }
 
     /**
@@ -18,7 +21,10 @@ class BookController extends Controller
      */
     public function index()
     {
-    
+        
+        $book = $this->book->paginate('6');
+        return response()->json($book, 200);
+
     }
 
     /**

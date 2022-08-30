@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PublishCompanyController;
+use App\Models\BookPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +22,17 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::prefix('v1')->group(function(){
+    Route::prefix('show-books')->group(function(){
+        Route::resource('book', BookController::class);
+    });
+    // Route::resource('author', AuthorController::class);
+    // Route::resource('bookphoto', BookPhoto::class);
+    // Route::resource('category', CategoryController::class);
+    // Route::resource('publishCompany', PublishCompanyController::class);
+});
+
+
+
