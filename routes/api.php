@@ -25,8 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::prefix('v1')->group(function(){
-    Route::prefix('show-books')->group(function(){
-        Route::resource('book', BookController::class);
+    Route::name('book')->group(function(){
+        Route::resource('books', BookController::class);
     });
     // Route::resource('author', AuthorController::class);
     // Route::resource('bookphoto', BookPhoto::class);

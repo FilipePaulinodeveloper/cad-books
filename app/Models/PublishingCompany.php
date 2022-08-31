@@ -12,11 +12,14 @@ class PublishingCompany extends Model
     protected $table = 'publishing_companies';
 
     protected $fillable = [
-        'name'
+        'name',
+        'description',
+        'description_photo',
     ];
-    
+
     public function books()
     {
         return $this->hasMany(Books::class);
     }
+    
 }

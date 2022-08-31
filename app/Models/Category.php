@@ -12,7 +12,9 @@ class Category extends Model
     protected $table = 'categories';
 
     protected $fillable = [
-        'name'
+        'name',
+        'description',
+        'category_photo',        
     ];   
     
     public function books()

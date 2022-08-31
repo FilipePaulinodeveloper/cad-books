@@ -33,10 +33,25 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( $request)
-    {   
-       
+    public function store( Request $request)
+    {      
+        $data = $request->all();
 
+        try{
+
+            $book = $this->book->create($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'O livro foi cadastrado com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+
+        
     }
 
     /**
@@ -57,10 +72,24 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($request, $id)
-    
+    public function update($id, Request $request)    
     {
-              
+              $data = $request->all();
+
+        try{
+
+            $book = $this->book->findorfail($id);
+            $book->update($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'O livro foi Atualizado com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
 

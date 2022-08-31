@@ -14,12 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create( 'books' ,  function (Blueprint $table){
+
             $table->id();
             $table->string('title');
-            $table->string('sinopse');
+            $table->text('sinopse');
             $table->integer('pages');
             $table->string('cover_type');      
+            $table->string('cover_photo');
             $table->unsignedBigInteger('publish_companies_id');
+
             
             $table->foreign('publish_companies_id')->references('id')->on('publishing_companies');
         });

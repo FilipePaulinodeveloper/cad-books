@@ -14,8 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create( 'publishing_companies' ,  function (Blueprint $table){
+
             $table->id();            
             $table->string('name');
+            $table->text('description');
+            $table->string('publishing_company_photo');           
+
+
         });
     }
 
