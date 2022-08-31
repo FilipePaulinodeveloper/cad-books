@@ -25,13 +25,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::prefix('v1')->group(function(){
-    Route::name('book')->group(function(){
-        Route::resource('books', BookController::class);
+    Route::name('books')->group(function(){
+        Route::resource('book', BookController::class);
     });
-    // Route::resource('author', AuthorController::class);
-    // Route::resource('bookphoto', BookPhoto::class);
-    // Route::resource('category', CategoryController::class);
-    // Route::resource('publishCompany', PublishCompanyController::class);
+    Route::name('authors')->group(function(){
+        Route::resource('author', AuthorController::class);        
+    });
+    Route::name('publishCompanies')->group(function(){
+        Route::resource('publishCompany', PublishCompanyController::class);       
+    });
+    Route::name('categories')->group(function(){
+        Route::resource('category', CategoryController::class);    
+    });
+    
+    
+    
 });
 
 

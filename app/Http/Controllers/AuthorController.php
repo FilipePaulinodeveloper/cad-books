@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
-{
-    public function __construct()
+{   
+    private $author;
+    public function __construct(Author $author)
     {
-       
+       $this->author = $author;
     }
 
     /**
@@ -18,7 +20,8 @@ class AuthorController extends Controller
      */
     public function index()
     {
-    
+        $author = $this->author->paginate('6');
+        return response()->json($author, 200);
     }
 
     /**
@@ -27,12 +30,26 @@ class AuthorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( $request)
-    {   
-       
+    public function store( Request $request)
+    {      
+        $data = $request->all();
 
+        try{
+
+            $author = $this->author->create($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'O Author foi cadastrado com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+
+        
     }
-
     /**
      * Display the specified resource.
      *
@@ -41,7 +58,19 @@ class AuthorController extends Controller
      */
     public function show($id)
     {
-       
+        try{
+
+            $author = $this->author->findorfail($id);
+
+            return response()->json([
+                'data' => [                    
+                    'data' => $author
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
     /**
@@ -51,10 +80,24 @@ class AuthorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($request, $id)
-    
+    public function update($id, Request $request)    
     {
-              
+              $data = $request->all();
+
+        try{
+
+            
+            $this->author->findorfail($id)->update($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'O Author foi Atualizado com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
 
@@ -67,7 +110,19 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
-     
+        try{
+
+            $this->author->findorfail($id)->delete();
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'O Author foi removido com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
    

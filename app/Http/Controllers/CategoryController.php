@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
-{
-    public function __construct()
+{   
+    private $category;
+    public function __construct(Category $category)
     {
-       
+       $this->category = $category;
     }
 
     /**
@@ -18,7 +20,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-    
+        $category = $this->category->paginate('6');
+        return response()->json($category, 200);
     }
 
     /**
@@ -27,9 +30,23 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( $request)
+    public function store( Request $request)
     {   
-       
+       $data = $request->all();
+
+       try{
+
+        $category = $this->category->create($data);
+
+        return response()->json([
+            'data' => [
+                'msg' => 'A Categoria foi cadastrado com sucesso'
+            ]
+        ], 200);
+
+    }catch(\Exception $e){
+        return response()->json(['error' => $e->getMessage()], 401);
+    }
 
     }
 
@@ -41,7 +58,19 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-       
+        try{
+
+            $category = $this->category->findorfail($id);
+
+            return response()->json([
+                'data' => [                    
+                    'data' => $category
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
     /**
@@ -51,10 +80,24 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($request, $id)
-    
+    public function update($id, Request $request)    
     {
-              
+              $data = $request->all();
+
+        try{
+
+            
+            $this->category->findorfail($id)->update($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'A Categoria foi Atualizado com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
 
@@ -66,7 +109,21 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-     
+    {      
+
+        try{
+
+            
+            $this->category->findorfail($id)->delete();
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'A Categoria foi deletada com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 }

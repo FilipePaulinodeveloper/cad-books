@@ -62,7 +62,19 @@ class BookController extends Controller
      */
     public function show($id)
     {
-       
+        try{
+
+            $book = $this->book->findorfail($id);
+
+            return response()->json([
+                'data' => [                    
+                    'data' => $book
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
     /**
@@ -78,8 +90,10 @@ class BookController extends Controller
 
         try{
 
-            $book = $this->book->findorfail($id);
-            $book->update($data);
+            // $book = $this->book->findorfail($id);
+            // $book->update($data);
+
+            $this->book->findorfail($id)->update($data);
 
             return response()->json([
                 'data' => [
@@ -102,6 +116,19 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-     
+        try{
+
+            
+            $this->book->findorfail($id)->delete();
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'Livro foi deletado com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 }

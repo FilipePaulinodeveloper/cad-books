@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PublishingCompany;
 use Illuminate\Http\Request;
 
 class PublishCompanyController extends Controller
-{
-    public function __construct()
+{   
+    private $publish_company;
+    public function __construct(PublishingCompany $publish_company)
     {
-       
+       $this->publish_company = $publish_company;
     }
 
     /**
@@ -18,7 +20,8 @@ class PublishCompanyController extends Controller
      */
     public function index()
     {
-    
+        $publish_company = $this->publish_company->paginate('6');
+        return response()->json($publish_company, 200);
     }
 
     /**
@@ -27,9 +30,23 @@ class PublishCompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( $request)
+    public function store( Request $request)
     {   
-       
+       $data = $request->all();
+
+       try{
+
+        $publish_company = $this->publish_company->create($data);
+
+        return response()->json([
+            'data' => [
+                'msg' => 'A editora foi cadastrado com sucesso'
+            ]
+        ], 200);
+
+    }catch(\Exception $e){
+        return response()->json(['error' => $e->getMessage()], 401);
+    }
 
     }
 
@@ -41,7 +58,19 @@ class PublishCompanyController extends Controller
      */
     public function show($id)
     {
-       
+        try{
+
+            $publish_company = $this->publish_company->findorfail($id);
+
+            return response()->json([
+                'data' => [                    
+                    'data' => $publish_company
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
     /**
@@ -51,10 +80,24 @@ class PublishCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($request, $id)
-    
+    public function update($id, Request $request)    
     {
-              
+              $data = $request->all();
+
+        try{
+
+            
+            $this->publish_company->findorfail($id)->update($data);
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'A editora foi Atualizado com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
 
@@ -66,7 +109,21 @@ class PublishCompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-     
+    {      
+
+        try{
+
+            
+            $this->publish_company->findorfail($id)->delete();
+
+            return response()->json([
+                'data' => [
+                    'msg' => 'A editora foi deletada com sucesso'
+                ]
+            ], 200);
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 }

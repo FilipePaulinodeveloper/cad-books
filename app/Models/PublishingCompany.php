@@ -9,12 +9,13 @@ class PublishingCompany extends Model
 {
     use HasFactory;
     
+    public $timestamps = false;
     protected $table = 'publishing_companies';
 
     protected $fillable = [
         'name',
         'description',
-        'description_photo',
+        'publishing_company_photo',
     ];
 
     public function books()
