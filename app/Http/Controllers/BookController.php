@@ -36,10 +36,14 @@ class BookController extends Controller
     public function store( Request $request)
     {      
         $data = $request->all();
+        $author = $request->get('author_id');
+        $category = $request->get('category_id');
 
         try{
 
             $book = $this->book->create($data);
+            $book->author()->sync([$author]);
+            $book->category()->sync([$category]);
 
             return response()->json([
                 'data' => [
