@@ -125,5 +125,19 @@ class AuthorController extends Controller
         }
     }
 
+    public function books($id)
+    {
+        try{            
+           $author = $this->author->findorfail($id);
+
+            return response()->json([
+                'data' => $author->books
+            ], 200);
+            
+            
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+    }
    
 }

@@ -126,4 +126,19 @@ class PublishCompanyController extends Controller
             return response()->json(['error' => $e->getMessage()], 401);
         }
     }
+
+    public function books($id)
+    {
+        try{            
+           $publish_company = $this->publish_company->findorfail($id);
+
+            return response()->json([
+                'data' => $publish_company->books
+            ], 200);
+            
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+    }
 }

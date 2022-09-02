@@ -10,7 +10,7 @@ class PublishingCompany extends Model
     use HasFactory;
     
     public $timestamps = false;
-    protected $table = 'publishing_company';
+    protected $table = 'publishing_company_id';
 
     protected $fillable = [
         'name',
@@ -20,7 +20,7 @@ class PublishingCompany extends Model
 
     public function books()
     {
-        return $this->hasMany(Books::class);
+        return $this->hasMany(Book::class);
     }
     
 }

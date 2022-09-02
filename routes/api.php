@@ -29,12 +29,17 @@ Route::prefix('v1')->group(function(){
         Route::resource('book', BookController::class);
     });
     Route::name('authors')->group(function(){
+        Route::get('author/{id}/books', [AuthorController::class , 'books']);
+
         Route::resource('author', AuthorController::class);        
     });
     Route::name('publishCompanies')->group(function(){
+        Route::get('publishCompany/{id}/books', [PublishCompanyController::class , 'books']);        
         Route::resource('publishCompany', PublishCompanyController::class);       
     });
     Route::name('categories')->group(function(){
+        Route::get('category/{id}/books', [CategoryController::class , 'books']);
+
         Route::resource('category', CategoryController::class);    
     });
     

@@ -21,9 +21,9 @@ return new class extends Migration
             $table->integer('pages');
             $table->string('cover_type');      
             $table->string('cover_photo');
-            $table->unsignedBigInteger('publish_company_id');
+            $table->unsignedBigInteger('publishing_company_id');
            
-            $table->foreign('publish_company_id')->references('id')->on('publishing_company');
+            $table->foreign('publishing_company_id')->references('id')->on('publishing_company');
             
         });
 

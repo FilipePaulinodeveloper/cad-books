@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -126,4 +127,20 @@ class CategoryController extends Controller
             return response()->json(['error' => $e->getMessage()], 401);
         }
     }
+
+    public function books($id)
+    {
+        try{            
+           $category = $this->category->findorfail($id);
+
+            return response()->json([
+                'data' => $category->books
+            ], 200);
+            
+
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
+    }
+
 }
