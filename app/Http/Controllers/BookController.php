@@ -19,11 +19,30 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index(Request $request)
+    {   
+        $book = $this->book;
         
-        $book = $this->book->paginate('6');
-        return response()->json($book, 200);
+        if($request->has('coditions'))
+        {
+            $expressions = explode(';' , $request->get('coditions'));
+
+            foreach($expressions as $e)
+            {
+                $exp = explode(':', $e);
+                $book = $book->where($exp[0], $exp[1] , $exp[2]);
+            }
+        }
+
+        if($request->has('fields')) 
+        {
+            $fields = $request->get('fields');
+            $book = $book->selectRaw($fields);            
+        }
+
+        
+      
+        return response()->json($book->paginate('6'), 200);
 
     }
 
@@ -120,19 +139,17 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        try{
-
-            
+        try{            
             $this->book->findorfail($id)->delete();
 
             return response()->json([
                 'data' => [
-                    'msg' => 'Livro foi deletado com sucesso'
+                    'msg' => ' o livro foi deletado com sucesso'
                 ]
             ], 200);
 
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()], 401);
-        }
-    }
+        }        
+    }    
 }

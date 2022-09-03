@@ -10,7 +10,7 @@ class PublishingCompany extends Model
     use HasFactory;
     
     public $timestamps = false;
-    protected $table = 'publishing_company_id';
+    protected $table = 'publishing_company';
 
     protected $fillable = [
         'name',

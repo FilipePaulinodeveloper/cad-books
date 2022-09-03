@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class PublishCompanyController extends Controller
 {   
-    private $publish_company;
-    public function __construct(PublishingCompany $publish_company)
+    private $publishing_company;
+    public function __construct(PublishingCompany $publishing_company)
     {
-       $this->publish_company = $publish_company;
+       $this->publishing_company = $publishing_company;
     }
 
     /**
@@ -20,8 +20,8 @@ class PublishCompanyController extends Controller
      */
     public function index()
     {
-        $publish_company = $this->publish_company->paginate('6');
-        return response()->json($publish_company, 200);
+        $publishing_company = $this->publishing_company->paginate('6');
+        return response()->json($publishing_company, 200);
     }
 
     /**
@@ -36,11 +36,11 @@ class PublishCompanyController extends Controller
 
        try{
 
-        $publish_company = $this->publish_company->create($data);
+        $publishing_company = $this->publishing_company->create($data);
 
         return response()->json([
             'data' => [
-                'msg' => 'A editora foi cadastrado com sucesso'
+                'msg' => 'A editora foi cadastrada com sucesso'
             ]
         ], 200);
 
@@ -60,11 +60,11 @@ class PublishCompanyController extends Controller
     {
         try{
 
-            $publish_company = $this->publish_company->findorfail($id);
+            $publishing_company = $this->publishing_company->findorfail($id);
 
             return response()->json([
                 'data' => [                    
-                    'data' => $publish_company
+                    'data' => $publishing_company
                 ]
             ], 200);
 
@@ -87,11 +87,11 @@ class PublishCompanyController extends Controller
         try{
 
             
-            $this->publish_company->findorfail($id)->update($data);
+            $this->publishing_company->findorfail($id)->update($data);
 
             return response()->json([
                 'data' => [
-                    'msg' => 'A editora foi Atualizado com sucesso'
+                    'msg' => 'A editora foi Atualizada com sucesso'
                 ]
             ], 200);
 
@@ -114,7 +114,7 @@ class PublishCompanyController extends Controller
         try{
 
             
-            $this->publish_company->findorfail($id)->delete();
+            $this->publishing_company->findorfail($id)->delete();
 
             return response()->json([
                 'data' => [
@@ -130,10 +130,10 @@ class PublishCompanyController extends Controller
     public function books($id)
     {
         try{            
-           $publish_company = $this->publish_company->findorfail($id);
+           $publishing_company = $this->publishing_company->findorfail($id);
 
             return response()->json([
-                'data' => $publish_company->books
+                'data' => $publishing_company->books
             ], 200);
             
 

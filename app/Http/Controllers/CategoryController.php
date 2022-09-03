@@ -41,7 +41,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'data' => [
-                'msg' => 'A Categoria foi cadastrado com sucesso'
+                'msg' => 'A categoria foi cadastrada com sucesso'
             ]
         ], 200);
 
@@ -92,7 +92,7 @@ class CategoryController extends Controller
 
             return response()->json([
                 'data' => [
-                    'msg' => 'A Categoria foi Atualizado com sucesso'
+                    'msg' => 'A categoria foi Atualizada com sucesso'
                 ]
             ], 200);
 
@@ -119,7 +119,7 @@ class CategoryController extends Controller
 
             return response()->json([
                 'data' => [
-                    'msg' => 'A Categoria foi deletada com sucesso'
+                    'msg' => 'A categoria foi deletada com sucesso'
                 ]
             ], 200);
 
