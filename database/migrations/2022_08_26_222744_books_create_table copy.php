@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('sinopse');
             $table->integer('pages');
             $table->string('cover_type');      
-            $table->string('cover_photo');
+            $table->string('book_photo');
             $table->unsignedBigInteger('publishing_company_id');
            
             $table->foreign('publishing_company_id')->references('id')->on('publishing_company');

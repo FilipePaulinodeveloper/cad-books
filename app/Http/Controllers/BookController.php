@@ -21,29 +21,22 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {   
-        $book = $this->book;
-        
-        if($request->has('coditions'))
-        {
-            $expressions = explode(';' , $request->get('coditions'));
-
-            foreach($expressions as $e)
-            {
-                $exp = explode(':', $e);
-                $book = $book->where($exp[0], $exp[1] , $exp[2]);
-            }
-        }
-
-        if($request->has('fields')) 
-        {
-            $fields = $request->get('fields');
-            $book = $book->selectRaw($fields);            
-        }
-
-        
+        $book = $this->book->paginate('6');            
       
-        return response()->json($book->paginate('6'), 200);
+        return response()->json($book, 200);
 
+    }
+
+    public function bookfiltertitle($title)
+    {         
+        $title = $this->book        
+            ->select()
+            ->where('title', 'like' , $title.'%' )            
+            ->orderBy('title', 'asc')     
+            ->paginate('6');
+
+        return response()->json($title , 200);
+        
     }
 
     /**
@@ -52,29 +45,36 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( Request $request)
+    public function store( Request $request)    
     {      
-        $data = $request->all();
-        $author = $request->get('author_id');
-        $category = $request->get('category_id');
+             $data = $request->all();
+             $author = $request->get('author_id');
+             $category = $request->get('category_id');
 
-        try{
+             $bookPhoto = $request->file('book_photo');
 
-            $book = $this->book->create($data);
-            $book->author()->sync([$author]);
-            $book->category()->sync([$category]);
+             try{
 
-            return response()->json([
-                'data' => [
-                    'msg' => 'O livro foi cadastrado com sucesso'
-                ]
-            ], 200);
+                 $book = $this->book->create($data);
+                 $book->author()->sync([$author]);
+                 $book->category()->sync([$category]);
 
-        }catch(\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
+                 if($bookPhoto){
+                     $bookPhoto->store('bookPhoto' , 'public');                               
+                    
+                 }
 
-        
+                 return response()->json([
+                     'data' => [
+                         'msg' => 'O livro foi cadastrado com sucesso'
+                     ]
+                 ], 200);
+
+             }catch(\Exception $e){
+                 return response()->json(['error' => $e->getMessage()], 401);
+             }
+
+       
     }
 
     /**
@@ -109,18 +109,30 @@ class BookController extends Controller
      */
     public function update($id, Request $request)    
     {
-              $data = $request->all();
+            $data = $request->all();
+            $author = $request->get('author_id');           
+            $category = $request->get('category_id');
+
+            $bookPhoto = $request->file('book_photo');
+            
 
         try{
 
-            // $book = $this->book->findorfail($id);
-            // $book->update($data);
+            
+            $book = $this->book->findorfail($id);
+            $book->update($data);            
+            
+            $book->author()->sync([$author]);            
+            $book->category()->sync([$category]);
 
-            $this->book->findorfail($id)->update($data);
+            if($bookPhoto){
+                $bookPhoto->store('Cover' , 'public');                                
+                
+            }
 
             return response()->json([
                 'data' => [
-                    'msg' => 'O livro foi Atualizado com sucesso'
+                    'msg' => 'Livro foi Atualizada com sucesso'
                 ]
             ], 200);
 
@@ -138,7 +150,7 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
+    {   
         try{            
             $this->book->findorfail($id)->delete();
 

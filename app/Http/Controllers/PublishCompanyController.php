@@ -24,6 +24,18 @@ class PublishCompanyController extends Controller
         return response()->json($publishing_company, 200);
     }
 
+    public function publishcompanyfiltername($name)
+    {         
+        $name = $this->publishing_company        
+            ->select()
+            ->where('name', 'like' , $name.'%' ) 
+            ->orderBy('name', 'asc')                
+            ->paginate('6');
+
+        return response()->json($name , 200);
+        
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -33,10 +45,15 @@ class PublishCompanyController extends Controller
     public function store( Request $request)
     {   
        $data = $request->all();
+       $publishingCompanyPhoto = $request->file('publishing_company_photo');
+
 
        try{
 
         $publishing_company = $this->publishing_company->create($data);
+        if($publishingCompanyPhoto){
+            $publishingCompanyPhoto->store('publishingCompanyPhoto' , 'public');                                        
+        }
 
         return response()->json([
             'data' => [
@@ -82,12 +99,15 @@ class PublishCompanyController extends Controller
      */
     public function update($id, Request $request)    
     {
-              $data = $request->all();
+            $data = $request->all();
+            $publishingCompanyPhoto = $request->file('publishing_company_photo');
 
-        try{
+        try{            
+           $publishing_company = $this->publishing_company->findorfail($id)->update($data);
 
-            
-            $this->publishing_company->findorfail($id)->update($data);
+            if($publishingCompanyPhoto){
+                $publishingCompanyPhoto->store('publishingCompanyPhoto' , 'public');                                        
+            }
 
             return response()->json([
                 'data' => [

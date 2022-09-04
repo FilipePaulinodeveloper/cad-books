@@ -25,6 +25,17 @@ class CategoryController extends Controller
         return response()->json($category, 200);
     }
 
+    public function categoryfiltername($name)
+    {         
+        $name = $this->category        
+            ->select()
+            ->where('name', 'like' , $name.'%' )            
+            ->orderBy('name', 'asc')     
+            ->paginate('6');
+
+        return response()->json($name , 200);
+        
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -34,11 +45,15 @@ class CategoryController extends Controller
     public function store( Request $request)
     {   
        $data = $request->all();
+       $categoryPhoto = $request->file('category_photo');
 
        try{
+        $this->category->create($data);
 
-        $category = $this->category->create($data);
-
+        if($categoryPhoto){
+            $categoryPhoto->store('categoryPhoto' , 'public');                                
+           
+        }
         return response()->json([
             'data' => [
                 'msg' => 'A categoria foi cadastrada com sucesso'
@@ -84,12 +99,17 @@ class CategoryController extends Controller
     public function update($id, Request $request)    
     {
               $data = $request->all();
+              $categoryPhoto = $request->file('category_photo');
+
 
         try{
 
             
             $this->category->findorfail($id)->update($data);
-
+            if($categoryPhoto){
+                $categoryPhoto->store('Cover' , 'public');                                
+               
+            }
             return response()->json([
                 'data' => [
                     'msg' => 'A categoria foi Atualizada com sucesso'

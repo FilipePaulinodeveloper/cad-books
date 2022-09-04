@@ -26,25 +26,34 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function(){
     Route::name('books')->group(function(){
-        Route::resource('book', BookController::class);
+       Route::resource('book', BookController::class);
+       
+        Route::get('bookfiltertitle/{title}/books' , [BookController::class , 'bookfiltertitle']);
     });
+
     Route::name('authors')->group(function(){
         Route::get('author/{id}/books', [AuthorController::class , 'books']);
 
+        Route::get('authorfiltername/{name}/author' , [AuthorController::class , 'authorfiltername']);
+
         Route::resource('author', AuthorController::class);        
     });
+
     Route::name('publishCompanies')->group(function(){
-        Route::get('publishCompany/{id}/books', [PublishCompanyController::class , 'books']);        
+        Route::get('publishCompany/{id}/books', [PublishCompanyController::class , 'books']);   
+
+        Route::get('publishcompanyfiltername/{name}/publishcompany' , [publishcompanyController::class , 'publishcompanyfiltername']);
+        
         Route::resource('publishCompany', PublishCompanyController::class);       
     });
+
     Route::name('categories')->group(function(){
         Route::get('category/{id}/books', [CategoryController::class , 'books']);
 
+        Route::get('categoryfiltername/{title}/category' , [categoryController::class , 'categoryfiltername']);
+
         Route::resource('category', CategoryController::class);    
-    });
-    
-    
-    
+    });     
 });
 
 

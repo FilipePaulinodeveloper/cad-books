@@ -24,6 +24,18 @@ class AuthorController extends Controller
         return response()->json($author, 200);
     }
 
+    public function authorfiltername($name)
+    {         
+        $name = $this->author        
+            ->select()
+            ->where('name', 'like' , $name.'%' )            
+            ->orderBy('name', 'asc')     
+            ->paginate('6');
+
+        return response()->json($name , 200);
+        
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -33,11 +45,16 @@ class AuthorController extends Controller
     public function store( Request $request)
     {      
         $data = $request->all();
+        $authorPhoto = $request->file('author_photo');
+
 
         try{
 
             $author = $this->author->create($data);
-
+            if($authorPhoto){
+                $authorPhoto->store('authorPhoto' , 'public');                                
+               
+            }
             return response()->json([
                 'data' => [
                     'msg' => 'O Author foi cadastrado com sucesso'
@@ -83,11 +100,15 @@ class AuthorController extends Controller
     public function update($id, Request $request)    
     {
               $data = $request->all();
+              $authorPhoto = $request->file('author_photo');
 
         try{
-
-            
+                        
             $this->author->findorfail($id)->update($data);
+
+            if($authorPhoto){
+                $authorPhoto->store('authorPhoto' , 'public');                                            
+            }
 
             return response()->json([
                 'data' => [
