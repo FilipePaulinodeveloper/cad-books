@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create( 'publishing_company' ,  function (Blueprint $table){
 
             $table->id();            
-            $table->string('name');
+            $table->string('name')->unique();
             $table->text('description');
             $table->string('publishing_company_photo');           
 

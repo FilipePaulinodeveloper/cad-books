@@ -51,8 +51,9 @@ class CategoryController extends Controller
         $this->category->create($data);
 
         if($categoryPhoto){
-            $categoryPhoto->store('categoryPhoto' , 'public');                                
-           
+            $categoryPhoto->store('categoryPhoto' , 'public');                                                      
+        }else {
+            return response()->json(['error' => 'Formato de arquivo não é permitido']);
         }
         return response()->json([
             'data' => [
@@ -107,7 +108,7 @@ class CategoryController extends Controller
             
             $this->category->findorfail($id)->update($data);
             if($categoryPhoto){
-                $categoryPhoto->store('Cover' , 'public');                                
+                $categoryPhoto->store('categoryPhoto' , 'public');                           
                
             }
             return response()->json([

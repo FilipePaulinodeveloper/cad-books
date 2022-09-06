@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create( 'books' ,  function (Blueprint $table){
 
             $table->id();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->text('sinopse');
             $table->integer('pages');
             $table->string('cover_type');      

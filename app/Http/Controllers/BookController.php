@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\photoRequest;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,21 @@ class BookController extends Controller
         return response()->json($title , 200);
         
     }
+    public function bookfilterauthor($id)
+    {         
+        $id = $this->book        
+            ->select()
+            ->from('author_book')
+            ->whereColumn('author_book.book_id', 'books.id')
+            ->orderBy('title', 'asc')     
+            ->paginate('6');
+
+           
+            
+
+        return response()->json($id , 200);
+        
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -45,13 +61,13 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( Request $request)    
+    public function store(Request $request, photoRequest $photoRequest)    
     {      
              $data = $request->all();
              $author = $request->get('author_id');
-             $category = $request->get('category_id');
+             $category = $request->get('category_id');                
 
-             $bookPhoto = $request->file('book_photo');
+             $bookPhoto = $photoRequest->file('book_photo');
 
              try{
 
@@ -60,9 +76,10 @@ class BookController extends Controller
                  $book->category()->sync([$category]);
 
                  if($bookPhoto){
-                     $bookPhoto->store('bookPhoto' , 'public');                               
-                    
-                 }
+                    $bookPhoto->store('bookPhoto' , 'public'); 
+                 } 
+                 
+                
 
                  return response()->json([
                      'data' => [
@@ -72,9 +89,7 @@ class BookController extends Controller
 
              }catch(\Exception $e){
                  return response()->json(['error' => $e->getMessage()], 401);
-             }
-
-       
+             }       
     }
 
     /**
@@ -126,7 +141,7 @@ class BookController extends Controller
             $book->category()->sync([$category]);
 
             if($bookPhoto){
-                $bookPhoto->store('Cover' , 'public');                                
+                $bookPhoto->store('bookPhoto' , 'public');                                
                 
             }
 

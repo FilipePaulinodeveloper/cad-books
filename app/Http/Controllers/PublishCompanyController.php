@@ -103,7 +103,7 @@ class PublishCompanyController extends Controller
             $publishingCompanyPhoto = $request->file('publishing_company_photo');
 
         try{            
-           $publishing_company = $this->publishing_company->findorfail($id)->update($data);
+          $this->publishing_company->findorfail($id)->update($data);
 
             if($publishingCompanyPhoto){
                 $publishingCompanyPhoto->store('publishingCompanyPhoto' , 'public');                                        
