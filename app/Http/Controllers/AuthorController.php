@@ -149,10 +149,11 @@ class AuthorController extends Controller
     public function books($id)
     {
         try{            
-           $author = $this->author->findorfail($id);
+           // $author = $this->author->findorfail($id);
+           $author = $this->author->with("books")->findorfail($id);
 
             return response()->json([
-                'data' => $author->books
+                'data' => $author
             ], 200);
             
             

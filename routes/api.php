@@ -29,7 +29,7 @@ Route::prefix('v1')->group(function(){
        Route::resource('book', BookController::class);
        
         Route::get('bookfiltertitle/{title}/books' , [BookController::class , 'bookfiltertitle']);
-        Route::get('bookfilterauthor/{id}/books' , [BookController::class , 'bookfilterauthor']);
+      //  Route::get('bookfilterauthor/{id}/books' , [BookController::class , 'bookfilterauthor']);
     });
 
     Route::name('authors')->group(function(){

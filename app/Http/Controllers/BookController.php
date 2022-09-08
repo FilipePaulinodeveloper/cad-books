@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\photoRequest;
 use App\Models\Book;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
 
 class BookController extends Controller
 {
@@ -62,12 +64,30 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, photoRequest $photoRequest)    
-    {      
+    {       
+        dd('oi');
              $data = $request->all();
              $author = $request->get('author_id');
+           
              $category = $request->get('category_id');                
 
-             $bookPhoto = $photoRequest->file('book_photo');
+            // $bookPhoto = $request->file('book_photo');
+              $bookPhoto = $photoRequest->file('book_photo');
+            
+            //  $rules = [
+            //     'book_photo' => 'required|image|mimes:jpeg,png,jpg',
+            //     'title' => 'required'
+            //  ];
+
+             $validator = FacadesValidator::make($bookPhoto);
+
+             if($validator->fails()){
+                return response()->json([
+                    'data' => [
+                        'msg' => 'Falha no cadastro'
+                    ]
+                ]);
+             }
 
              try{
 
@@ -76,8 +96,13 @@ class BookController extends Controller
                  $book->category()->sync([$category]);
 
                  if($bookPhoto){
-                    $bookPhoto->store('bookPhoto' , 'public'); 
-                 } 
+                    if($request->file('book_photo')->isValid()){
+                        $extension = $bookPhoto->getClientOriginalExtension();
+                        $title = $request->get('title');
+                        $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
+
+                    }
+                 }    
                  
                 
 
@@ -122,7 +147,7 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id, Request $request)    
+    public function update($id, Request $request,  photoRequest $photoRequest )     
     {
             $data = $request->all();
             $author = $request->get('author_id');           
@@ -140,10 +165,12 @@ class BookController extends Controller
             $book->author()->sync([$author]);            
             $book->category()->sync([$category]);
 
+          
             if($bookPhoto){
-                $bookPhoto->store('bookPhoto' , 'public');                                
-                
-            }
+                $extension = $bookPhoto->getClientOriginalExtension();
+                $title = $request->get('title');
+                $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
+             }  
 
             return response()->json([
                 'data' => [
