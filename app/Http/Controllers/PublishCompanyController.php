@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PhotoPublishCompanyRequest;
 use App\Models\PublishingCompany;
 use Illuminate\Http\Request;
 
@@ -42,18 +43,23 @@ class PublishCompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( Request $request)
+    public function store( Request $request, PhotoPublishCompanyRequest $photoPublishCompanyRequest)
     {   
        $data = $request->all();
-       $publishingCompanyPhoto = $request->file('publishing_company_photo');
+       $publishingCompanyPhoto = $photoPublishCompanyRequest->file('publishing_company_photo');
 
 
        try{
 
-        $publishing_company = $this->publishing_company->create($data);
-        if($publishingCompanyPhoto){
-            $publishingCompanyPhoto->store('publishingCompanyPhoto' , 'public');                                        
-        }
+         $this->publishing_company->create($data);
+         if($publishingCompanyPhoto){
+            if($request->file('publishing_company_photo')->isValid()){
+                $extension = $publishingCompanyPhoto->getClientOriginalExtension();
+                $name = $request->get('name');
+                $publishingCompanyPhoto->storeAs('publishingCompanyPhoto', "{$name}" .  "." . "{$extension}" ); 
+
+            }
+         }    
 
         return response()->json([
             'data' => [
@@ -97,17 +103,22 @@ class PublishCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id, Request $request)    
+    public function update($id, Request $request, PhotoPublishCompanyRequest $photoPublishCompanyRequest)    
     {
             $data = $request->all();
-            $publishingCompanyPhoto = $request->file('publishing_company_photo');
+            $publishingCompanyPhoto = $photoPublishCompanyRequest->file('publishing_company_photo');
 
         try{            
           $this->publishing_company->findorfail($id)->update($data);
 
-            if($publishingCompanyPhoto){
-                $publishingCompanyPhoto->store('publishingCompanyPhoto' , 'public');                                        
+          if($publishingCompanyPhoto){
+            if($request->file('publishing_company_photo')->isValid()){
+                $extension = $publishingCompanyPhoto->getClientOriginalExtension();
+                $name = $request->get('name');
+                $publishingCompanyPhoto->storeAs('publishingCompanyPhoto', "{$name}" .  "." . "{$extension}" ); 
+
             }
+         }    
 
             return response()->json([
                 'data' => [

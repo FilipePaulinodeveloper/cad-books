@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PhotoCategoryRequest;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -42,19 +43,22 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( Request $request)
+    public function store( Request $request, PhotoCategoryRequest $photoCategoryRequest)
     {   
        $data = $request->all();
-       $categoryPhoto = $request->file('category_photo');
+       $categoryPhoto = $photoCategoryRequest->file('category_photo');
 
        try{
         $this->category->create($data);
 
         if($categoryPhoto){
-            $categoryPhoto->store('categoryPhoto' , 'public');                                                      
-        }else {
-            return response()->json(['error' => 'Formato de arquivo não é permitido']);
-        }
+            if($request->file('category_photo')->isValid()){
+                $extension = $categoryPhoto->getClientOriginalExtension();
+                $name = $request->get('name');
+                $categoryPhoto->storeAs('categoryPhoto', "{$name}" .  "." . "{$extension}" ); 
+            }
+        } 
+          
         return response()->json([
             'data' => [
                 'msg' => 'A categoria foi cadastrada com sucesso'
@@ -97,20 +101,24 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id, Request $request)    
+    public function update($id, Request $request, PhotoCategoryRequest $photoCategoryRequest)    
     {
               $data = $request->all();
-              $categoryPhoto = $request->file('category_photo');
+              $categoryPhoto = $photoCategoryRequest->file('category_photo');
 
 
         try{
 
             
             $this->category->findorfail($id)->update($data);
+
             if($categoryPhoto){
-                $categoryPhoto->store('categoryPhoto' , 'public');                           
-               
-            }
+                if($request->file('category_photo')->isValid()){
+                    $extension = $categoryPhoto->getClientOriginalExtension();
+                    $name = $request->get('name');
+                    $categoryPhoto->storeAs('categoryPhoto', "{$name}" .  "." . "{$extension}" ); 
+                }
+             }    
             return response()->json([
                 'data' => [
                     'msg' => 'A categoria foi Atualizada com sucesso'

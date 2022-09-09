@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PhotoAuthorRequest;
+use App\Http\Requests\photoRequest;
 use App\Models\Author;
 use Illuminate\Http\Request;
 
@@ -42,19 +44,24 @@ class AuthorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store( Request $request)
+    public function store( Request $request, PhotoAuthorRequest $photoAuthorRequest )
     {      
-        $data = $request->all();
-        $authorPhoto = $request->file('author_photo');
+        $data = $request->all();      
 
+        $authorPhoto = $photoAuthorRequest->file('author_photo');   
 
         try{
 
-            $author = $this->author->create($data);
+            $this->author->create($data);
             if($authorPhoto){
-                $authorPhoto->store('authorPhoto' , 'public');                                
-               
-            }
+                if($request->file('author_photo')->isValid()){
+                    $extension = $authorPhoto->getClientOriginalExtension();
+                    $name = $request->get('name');
+                    $authorPhoto->storeAs('authorPhoto', "{$name}" .  "." . "{$extension}" ); 
+
+                }
+             }    
+
             return response()->json([
                 'data' => [
                     'msg' => 'O Author foi cadastrado com sucesso'
@@ -97,18 +104,22 @@ class AuthorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id, Request $request)    
+    public function update($id, Request $request, PhotoAuthorRequest $photoAuthorRequest)    
     {
               $data = $request->all();
-              $authorPhoto = $request->file('author_photo');
+              $authorPhoto = $photoAuthorRequest->file('author_photo');   
 
         try{
                         
             $this->author->findorfail($id)->update($data);
-
             if($authorPhoto){
-                $authorPhoto->store('authorPhoto' , 'public');                                            
-            }
+                if($request->file('author_photo')->isValid()){
+                    $extension = $authorPhoto->getClientOriginalExtension();
+                    $name = $request->get('name');
+                    $authorPhoto->storeAs('authorPhoto', "{$name}" .  "." . "{$extension}" ); 
+
+                }
+             }    
 
             return response()->json([
                 'data' => [

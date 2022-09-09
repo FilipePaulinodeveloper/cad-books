@@ -65,29 +65,15 @@ class BookController extends Controller
      */
     public function store(Request $request, photoRequest $photoRequest)    
     {       
-        dd('oi');
+        
              $data = $request->all();
-             $author = $request->get('author_id');
-           
+
+             $author = $request->get('author_id');           
              $category = $request->get('category_id');                
+           
+             $bookPhoto = $photoRequest->file('book_photo');           
+  
 
-            // $bookPhoto = $request->file('book_photo');
-              $bookPhoto = $photoRequest->file('book_photo');
-            
-            //  $rules = [
-            //     'book_photo' => 'required|image|mimes:jpeg,png,jpg',
-            //     'title' => 'required'
-            //  ];
-
-             $validator = FacadesValidator::make($bookPhoto);
-
-             if($validator->fails()){
-                return response()->json([
-                    'data' => [
-                        'msg' => 'Falha no cadastro'
-                    ]
-                ]);
-             }
 
              try{
 
@@ -149,28 +135,38 @@ class BookController extends Controller
      */
     public function update($id, Request $request,  photoRequest $photoRequest )     
     {
-            $data = $request->all();
-            $author = $request->get('author_id');           
-            $category = $request->get('category_id');
+         
+        $data = $request->all();
 
-            $bookPhoto = $request->file('book_photo');
-            
+        $author = $request->get('author_id');           
+        $category = $request->get('category_id');                
+      
+        $bookPhoto = $photoRequest->file('book_photo');                     
+                   
 
         try{
-
             
+           
             $book = $this->book->findorfail($id);
-            $book->update($data);            
+            $book->save($data);            
             
             $book->author()->sync([$author]);            
             $book->category()->sync([$category]);
 
           
             if($bookPhoto){
-                $extension = $bookPhoto->getClientOriginalExtension();
-                $title = $request->get('title');
-                $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
-             }  
+                if($request->file('book_photo')->isValid()){
+                    $extension = $bookPhoto->getClientOriginalExtension();
+                    $title = $request->get('title');
+                    $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
+                }
+             }else{
+                return response()->json([
+                    'data' => [
+                        'msg' => 'Erro no upload da imagem'
+                    ]
+                ]);
+             } 
 
             return response()->json([
                 'data' => [
