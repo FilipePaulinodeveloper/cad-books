@@ -24,8 +24,14 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {   
-        $book = $this->book->paginate('6');            
-      
+        $book = $this->book->paginate('8'); 
+        // $book = $this->book->find(1); 
+
+        // $arquivo = $_SERVER['HTTP_HOST'] .'/'. $book->book_photo;
+        
+        // dd($arquivo);
+
+       // TENHO QUE ACESSAR O BOOK_PHOTO EM BOOK E CONCATENAR COM O SERVIDOR E A PORTA
         return response()->json($book, 200);
 
     }
@@ -77,18 +83,21 @@ class BookController extends Controller
 
              try{
 
-                 $book = $this->book->create($data);
-                 $book->author()->sync([$author]);
-                 $book->category()->sync([$category]);
+                $arquivo = '';
 
                  if($bookPhoto){
                     if($request->file('book_photo')->isValid()){
                         $extension = $bookPhoto->getClientOriginalExtension();
                         $title = $request->get('title');
-                        $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
-
+                        $arquivo = $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" );                         
                     }
-                 }    
+                 }
+                 $data['book_photo'] = $arquivo;   
+                 
+
+                 $book = $this->book->create($data);
+                 $book->author()->sync([$author]);
+                 $book->category()->sync([$category]);
                  
                 
 
