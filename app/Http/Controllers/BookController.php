@@ -24,7 +24,7 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {   
-        $book = $this->book->paginate('8'); 
+        $book = $this->book->paginate('10'); 
         // $book = $this->book->find(1); 
 
         // $arquivo = $_SERVER['HTTP_HOST'] .'/'. $book->book_photo;
@@ -197,7 +197,8 @@ class BookController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {   
+    {           
+        
         try{            
             $this->book->findorfail($id)->delete();
 

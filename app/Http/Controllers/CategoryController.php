@@ -49,16 +49,21 @@ class CategoryController extends Controller
        $categoryPhoto = $photoCategoryRequest->file('category_photo');
 
        try{
-        $this->category->create($data);
-
+       
         if($categoryPhoto){
+
+            $arquivo = '';
+
             if($request->file('category_photo')->isValid()){
                 $extension = $categoryPhoto->getClientOriginalExtension();
                 $name = $request->get('name');
-                $categoryPhoto->storeAs('categoryPhoto', "{$name}" .  "." . "{$extension}" ); 
+                $arquivo = $categoryPhoto->storeAs('categoryPhoto', "{$name}" .  "." . "{$extension}" ); 
             }
         } 
+        $data['category_photo'] = $arquivo;
           
+        $this->category->create($data);
+
         return response()->json([
             'data' => [
                 'msg' => 'A categoria foi cadastrada com sucesso'
@@ -107,18 +112,21 @@ class CategoryController extends Controller
               $categoryPhoto = $photoCategoryRequest->file('category_photo');
 
 
-        try{
-
+        try{           
             
-            $this->category->findorfail($id)->update($data);
+            $arquivo = '';
 
             if($categoryPhoto){
                 if($request->file('category_photo')->isValid()){
                     $extension = $categoryPhoto->getClientOriginalExtension();
                     $name = $request->get('name');
-                    $categoryPhoto->storeAs('categoryPhoto', "{$name}" .  "." . "{$extension}" ); 
+                    $arquivo = $categoryPhoto->storeAs('categoryPhoto', "{$name}" .  "." . "{$extension}" ); 
                 }
              }    
+
+             $data['category_photo'] = $arquivo;
+             $this->category->findorfail($id)->update($data);
+
             return response()->json([
                 'data' => [
                     'msg' => 'A categoria foi Atualizada com sucesso'

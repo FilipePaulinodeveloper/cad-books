@@ -51,15 +51,20 @@ class PublishCompanyController extends Controller
 
        try{
 
-         $this->publishing_company->create($data);
+        $arquivo = '';
+        
          if($publishingCompanyPhoto){
             if($request->file('publishing_company_photo')->isValid()){
                 $extension = $publishingCompanyPhoto->getClientOriginalExtension();
                 $name = $request->get('name');
-                $publishingCompanyPhoto->storeAs('publishingCompanyPhoto', "{$name}" .  "." . "{$extension}" ); 
+              $arquivo = $publishingCompanyPhoto->storeAs('publishingCompanyPhoto', "{$name}" .  "." . "{$extension}" ); 
 
             }
-         }    
+         }   
+
+         $data['publishing_company_photo'] = $arquivo;
+         
+         $this->publishing_company->create($data);
 
         return response()->json([
             'data' => [
@@ -109,16 +114,20 @@ class PublishCompanyController extends Controller
             $publishingCompanyPhoto = $photoPublishCompanyRequest->file('publishing_company_photo');
 
         try{            
-          $this->publishing_company->findorfail($id)->update($data);
+          $arquivo = '';
 
           if($publishingCompanyPhoto){
             if($request->file('publishing_company_photo')->isValid()){
                 $extension = $publishingCompanyPhoto->getClientOriginalExtension();
                 $name = $request->get('name');
-                $publishingCompanyPhoto->storeAs('publishingCompanyPhoto', "{$name}" .  "." . "{$extension}" ); 
+                $arquivo =  $publishingCompanyPhoto->storeAs('publishingCompanyPhoto', "{$name}" .  "." . "{$extension}" ); 
 
             }
          }    
+
+         $data['publishing_company_photo'] = $arquivo;
+
+         $this->publishing_company->findorfail($id)->update($data);
 
             return response()->json([
                 'data' => [

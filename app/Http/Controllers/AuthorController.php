@@ -21,7 +21,7 @@ class AuthorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
         $author = $this->author->paginate('6');
         return response()->json($author, 200);
     }
@@ -51,16 +51,20 @@ class AuthorController extends Controller
         $authorPhoto = $photoAuthorRequest->file('author_photo');   
 
         try{
+            $arquivo = '';
 
-            $this->author->create($data);
             if($authorPhoto){
                 if($request->file('author_photo')->isValid()){
                     $extension = $authorPhoto->getClientOriginalExtension();
                     $name = $request->get('name');
-                    $authorPhoto->storeAs('authorPhoto', "{$name}" .  "." . "{$extension}" ); 
+                   $arquivo =  $authorPhoto->storeAs('authorPhoto', "{$name}" .  "." . "{$extension}" ); 
 
                 }
-             }    
+             } 
+            
+             $data['author_photo'] = $arquivo;
+
+            $this->author->create($data);
 
             return response()->json([
                 'data' => [
@@ -110,16 +114,21 @@ class AuthorController extends Controller
               $authorPhoto = $photoAuthorRequest->file('author_photo');   
 
         try{
-                        
-            $this->author->findorfail($id)->update($data);
+            
+            $arquivo = '';
+           
             if($authorPhoto){
                 if($request->file('author_photo')->isValid()){
                     $extension = $authorPhoto->getClientOriginalExtension();
                     $name = $request->get('name');
-                    $authorPhoto->storeAs('authorPhoto', "{$name}" .  "." . "{$extension}" ); 
+                   $arquivo = $authorPhoto->storeAs('authorPhoto', "{$name}" .  "." . "{$extension}" ); 
 
                 }
-             }    
+             }   
+             
+             $data['author_photo'] = $arquivo;
+
+             $this->author->findorfail($id)->update($data);
 
             return response()->json([
                 'data' => [
