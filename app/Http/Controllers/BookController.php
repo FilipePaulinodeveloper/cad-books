@@ -201,7 +201,7 @@ class BookController extends Controller
         
         try{            
             $this->book->findorfail($id)->delete();
-
+            
             return response()->json([
                 'data' => [
                     'msg' => ' o livro foi deletado com sucesso'
