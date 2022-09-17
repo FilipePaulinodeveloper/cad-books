@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->string('name')->unique();
             $table->text('description');
-            $table->string('author_photo');           
+            $table->string('author_photo')->nullable();           
             
         });
     }

@@ -16,7 +16,7 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
-        'category_photo',        
+        // 'category_photo',        
     ];   
 
     protected function categoryPhoto(): Attribute

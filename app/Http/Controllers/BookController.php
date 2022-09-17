@@ -74,8 +74,8 @@ class BookController extends Controller
         
              $data = $request->all();
 
-             $author = $request->get('author_id');           
-             $category = $request->get('category_id');                
+            //  $author = $request->get('author_id');           
+            //  $category = $request->get('category_id');                
            
              $bookPhoto = $photoRequest->file('book_photo');           
   
@@ -96,8 +96,20 @@ class BookController extends Controller
                  
 
                  $book = $this->book->create($data);
-                 $book->author()->sync([$author]);
-                 $book->category()->sync([$category]);
+                //  $book->author()->sync([$author]);
+                //  $book->category()->sync([$category]);
+                if (isset($data['category_id']) && count($data['category_id'])) {
+
+                    $book->category()->sync($data['category_id']);
+    
+                }    
+    
+    
+                if (isset($data['author_id']) && count($data['author_id'])) {
+    
+                    $book->author()->sync($data['author_id']);
+    
+                }
                  
                 
 

@@ -17,8 +17,7 @@ class Book extends Model
 
         'title',
         'sinopse',
-        'pages',
-        'cover_type',
+        'pages',        
         'book_photo',    
         'publishing_company_id', 
         

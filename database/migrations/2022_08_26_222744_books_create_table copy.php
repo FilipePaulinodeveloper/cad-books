@@ -18,9 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('title')->unique();
             $table->text('sinopse');
-            $table->integer('pages');
-            $table->string('cover_type');      
-            $table->string('book_photo');
+            $table->integer('pages');            
+            $table->string('book_photo')->nullable();
             $table->unsignedBigInteger('publishing_company_id');
            
             $table->foreign('publishing_company_id')->references('id')->on('publishing_company');

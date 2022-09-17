@@ -24,14 +24,14 @@ class PhotoAuthorRequest extends FormRequest
     public function rules()
     {
         return [
-            'author_photo' => 'required|image|mimes:jpeg,png,jpg',      
+            // 'author_photo' => 'required|image|mimes:jpeg,png,jpg',      
         ];
     }
 
     public function messages()
     {
         return [
-            'book_photo.required' => 'A Foto do livro é obrigatoria',           
+            // 'book_photo.required' => 'A Foto do livro é obrigatoria',           
             'book_photo.image' => 'Insira uma imagem',
             'book_photo.mimes:jpeg,png,jpg' => 'O formato não é valido',
         ];

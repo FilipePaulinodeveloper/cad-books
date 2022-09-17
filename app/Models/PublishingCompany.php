@@ -16,7 +16,7 @@ class PublishingCompany extends Model
     protected $fillable = [
         'name',
         'description',
-        'publishing_company_photo',
+        //'publishing_company_photo',
     ];
 
     protected function publishingCompanyPhoto(): Attribute
