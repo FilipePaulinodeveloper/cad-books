@@ -50,9 +50,9 @@ class CategoryController extends Controller
 
        try{
        
+        $arquivo = '';
+        
         if($categoryPhoto){
-
-            $arquivo = '';
 
             if($request->file('category_photo')->isValid()){
                 $extension = $categoryPhoto->getClientOriginalExtension();
@@ -110,7 +110,6 @@ class CategoryController extends Controller
     {
               $data = $request->all();
               $categoryPhoto = $photoCategoryRequest->file('category_photo');
-
 
         try{           
             

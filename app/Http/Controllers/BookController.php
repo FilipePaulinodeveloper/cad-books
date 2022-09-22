@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Api\ApiMessages;
 use App\Http\Requests\photoRequest;
 use App\Models\Book;
 use Illuminate\Contracts\Validation\Validator;
@@ -35,6 +36,33 @@ class BookController extends Controller
         return response()->json($book, 200);
 
     }
+
+    public function showEdit($id)
+
+    {
+
+        try {
+            $book = $this->book
+                ->with('author')
+                ->with('category')
+                ->find($id)              
+
+            ;
+            return response()->json([
+
+                'data' => $book
+
+            ], 200);
+
+        } catch (\Exception $e) {
+
+            $message = new ApiMessages($e->getMessage());
+
+            return response()->json($message->getMessage(), 401);
+
+        }
+
+  }
 
     public function bookfiltertitle($title)
     {         
@@ -72,14 +100,9 @@ class BookController extends Controller
     public function store(Request $request, photoRequest $photoRequest)    
     {       
         
-             $data = $request->all();
-
-            //  $author = $request->get('author_id');           
-            //  $category = $request->get('category_id');                
+             $data = $request->all();         
            
              $bookPhoto = $photoRequest->file('book_photo');           
-  
-
 
              try{
 
@@ -96,8 +119,7 @@ class BookController extends Controller
                  
 
                  $book = $this->book->create($data);
-                //  $book->author()->sync([$author]);
-                //  $book->category()->sync([$category]);
+              
                 if (isset($data['category_id']) && count($data['category_id'])) {
 
                     $book->category()->sync($data['category_id']);
@@ -157,37 +179,57 @@ class BookController extends Controller
     public function update($id, Request $request,  photoRequest $photoRequest )     
     {
          
-        $data = $request->all();
-
-        $author = $request->get('author_id');           
-        $category = $request->get('category_id');                
+        $data = $request->all();        
       
         $bookPhoto = $photoRequest->file('book_photo');                     
                    
 
-        try{
-            
+        try{            
            
             $book = $this->book->findorfail($id);
-            $book->save($data);            
+                                       
             
-            $book->author()->sync([$author]);            
-            $book->category()->sync([$category]);
+            $arquivo = '';
+            try {
 
-          
-            if($bookPhoto){
-                if($request->file('book_photo')->isValid()){
-                    $extension = $bookPhoto->getClientOriginalExtension();
-                    $title = $request->get('title');
-                    $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
+                if($bookPhoto){
+                    if($request->file('book_photo')->isValid()){
+                        $extension = $bookPhoto->getClientOriginalExtension();
+                        $title = $request->get('title');
+                        $arquivo = $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
+                    }                       
+                    
                 }
-             }else{
-                return response()->json([
-                    'data' => [
-                        'msg' => 'Erro no upload da imagem'
-                    ]
-                ]);
-             } 
+                $book->update($data);         
+
+                $data['book_photo'] = $arquivo; 
+                      
+                    
+                    if (isset($data['category_id']) && count($data['category_id'])) {
+
+                       $ids = json_decode(json_encode($data['category_id']), true);
+                         $book->category()->sync($ids);    
+
+                        //  $book->category()->sync([2,3]);                      
+        
+                     }   
+        
+        
+                    if (isset($data['author_id']) && count($data['author_id'])) {
+        
+                        $book->author()->sync($data['author_id']);
+        
+                    }
+
+                
+            }catch(\Exception $e){
+            
+                $message = new ApiMessages($e->getMessage());
+                return response()->json($message->getMessage(),401);
+    
+            }
+
+            
 
             return response()->json([
                 'data' => [
