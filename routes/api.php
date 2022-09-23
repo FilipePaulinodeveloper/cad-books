@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
 // Route::post('/auth/login', [AuthController::class , 'login']);
 
 // Route::prefix('v1')->group(function(){ 
@@ -32,9 +34,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     Route::get('logout', [LoginJwtController::class, 'logout' ])->name('logout');
 //     Route::get('refresh', [LoginJwtController::class, 'refresh' ])->name('refresh');
 // });
+Route::post('/user' , [AuthController::class, 'register']);
+Route::post('v1/auth/login', [AuthController::class , 'login'])->name('login');
+Route::post('/logout', [AuthController::class , 'logout'])->name('logout');
 
-Route::prefix('v1')->group(function(){
-    Route::post('/auth/login', [AuthController::class , 'login']);
+
+Route::middleware('auth:api')->prefix('v1')->group(function(){
+
+
 
     Route::name('books')->group(function(){
        Route::resource('book', BookController::class);

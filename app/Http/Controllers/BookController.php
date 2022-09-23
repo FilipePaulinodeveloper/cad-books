@@ -41,7 +41,7 @@ class BookController extends Controller
 
     {
 
-        try {
+        
             $book = $this->book
                 ->with('author')
                 ->with('category')
@@ -54,13 +54,6 @@ class BookController extends Controller
 
             ], 200);
 
-        } catch (\Exception $e) {
-
-            $message = new ApiMessages($e->getMessage());
-
-            return response()->json($message->getMessage(), 401);
-
-        }
 
   }
 
@@ -190,7 +183,7 @@ class BookController extends Controller
                                        
             
             $arquivo = '';
-            try {
+           
 
                 if($bookPhoto){
                     if($request->file('book_photo')->isValid()){
@@ -222,12 +215,7 @@ class BookController extends Controller
                     }
 
                 
-            }catch(\Exception $e){
-            
-                $message = new ApiMessages($e->getMessage());
-                return response()->json($message->getMessage(),401);
-    
-            }
+           
 
             
 
