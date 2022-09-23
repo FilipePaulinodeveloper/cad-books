@@ -179,21 +179,24 @@ class BookController extends Controller
 
         try{            
            
-            $book = $this->book->findorfail($id);
-                                       
+            $book = Book::findorfail($id);
+                            
+            $book->fill($request->except('book_photo'));
             
             $arquivo = '';
            
 
-                if($bookPhoto){
-                    if($request->file('book_photo')->isValid()){
-                        $extension = $bookPhoto->getClientOriginalExtension();
-                        $title = $request->get('title');
-                        $arquivo = $bookPhoto->storeAs('bookPhoto', "{$title}" .  "." . "{$extension}" ); 
-                    }                       
-                    
-                }
-                $book->update($data);         
+            if($file = $request->hasFile('book_photo')) { 
+        
+                $file = $request->file('book_photo') ;     
+                $fileName = $file->getClientOriginalName() ;  
+                $destinationPath = public_path().'/img/book/' ;    
+                $file->move($destinationPath,$fileName);   
+                $book->book_photo = $fileName ;
+      
+                
+           } 
+                $book->save();         
 
                 $data['book_photo'] = $arquivo; 
                       
@@ -213,6 +216,29 @@ class BookController extends Controller
                         $book->author()->sync($data['author_id']);
         
                     }
+
+
+            // $bookimage = Book::find($id); 
+            // // This is like $request->all except it doesn't set the image 
+            // // You "fill" the new data so that it doesn't call save yet. 
+        
+            // $bookimage->fill($request->except('book_photo'));
+            //  // If there is a file, we set the book_photo 
+            //  if($file = $request->hasFile('book_photo')) { 
+        
+            //       $file = $request->file('book_photo') ;     
+            //       $fileName = $file->getClientOriginalName() ;  
+            //       $destinationPath = public_path().'/img/book/' ;    
+            //       $file->move($destinationPath,$fileName);   
+            //       $bookimage->image = $fileName ;
+        
+                  
+            //  } 
+            //       // Then we just save 
+            //       $bookimage->save(); 
+            //       dd($bookimage);     
+             
+        
 
                 
            
